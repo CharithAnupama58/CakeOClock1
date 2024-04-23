@@ -14,6 +14,7 @@ import cors from 'cors'
 import testRoutes from './Routes/Login.js'
 import feedbackRoutes from './Routes/feedback.js'
 import stockManagementRoutes from './Routes/stockManagement.js'
+import customizeCake from './Routes/customizeCake.js'
 
 const app = express();
 app.use(cors());
@@ -30,6 +31,7 @@ export const db =  mysql.createConnection({
 app.use('/server/test', testRoutes);
 app.use('/server/feedback',feedbackRoutes);
 app.use('/server/stockManagement',stockManagementRoutes);
+app.use('/server/customizeCake',customizeCake)
 
 
 app.listen(3001, () => {
