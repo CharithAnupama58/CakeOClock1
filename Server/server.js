@@ -15,8 +15,14 @@ import testRoutes from './Routes/Login.js'
 import feedbackRoutes from './Routes/feedback.js'
 import stockManagementRoutes from './Routes/stockManagement.js'
 import customizeCake from './Routes/customizeCake.js'
+import multer from 'multer'
+import path from 'path'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 app.use(cors());
 
 app.use(express.json());
@@ -68,4 +74,26 @@ app.listen(3001, () => {
 //         }
 //     });
 // });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads'); // Uploads will be stored in the 'uploads' folder
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Keep the original file name
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Handle POST request to upload image
+app.post('/uploads', upload.single('image'), async (req, res) => {
+  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    console.log('Uploaded file:', req.file);
+    console.log('Image URL:', imageUrl);
+    res.json({ imageUrl });
+
+});
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
